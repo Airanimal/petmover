@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Order Form</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            background-color: #3568a7;
+            padding: 15px;
+            color: #fff;
+            position: relative; /* Normal flow position */
+            width: 100%;
+        }
+
+        header .logo {
+            height: 50px;
+            margin-right: 15px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        /* Main container */
+        .container {
+            background-image: url('Screenshot_28-11-2024_134155_safeharborah.com.jpeg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: auto; /* Keep original size */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 100px); /* Adjust for spacing */
+            padding: 20px;
+            margin-top: 400px; /* Add space below the header */
+        }
+
+        /* Form styling */
+        form {
+            background: rgba(255, 255, 255, 0.9); /* Light background for form readability */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="time"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .delivery-description{
+            background-color: #bec9d800;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #3568a7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #040d1a;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <img src="logo-white.webp" alt="Company Logo" class="logo">
+        <h1>Delivery Order Form</h1>
+    </header>
+
+    <!-- Main container -->
+    <div class="container">
+        <!-- Form -->
+        <form action="confirmpayment.html" method="GET">
+            <label for="deliver-from">Deliver from:</label>
+            <input type="text" id="deliver-from" name="deliver-from" required>
+
+            <label for="street-address">Street Address:</label>
+            <input type="text" id="street-address" name="street-address" required>
+
+            <label for="street-address-line-2">Street Address Line 2:</label>
+            <input type="text" id="street-address-line-2" name="street-address-line-2">
+
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required>
+
+            <label for="region">Region:</label>
+            <input type="text" id="region" name="region">
+
+            <label for="postal-zip-code">Postal / Zip Code:</label>
+            <input type="text" id="postal-zip-code" name="postal-zip-code" required>
+
+            <label for="country">Country:</label>
+            <select id="country" name="country" required>
+                <option value="Romania" selected>United state</option>
+                <!-- Add other countries if necessary -->
+            </select>
+
+            <label for="delivery-description" ">Delivery Description:</label>
+            <textarea id="delivery-description" class="delivery-description name="delivery-description" rows="4" required></textarea>
+
+            <label for="date-of-delivery">Date to be Delivered:</label>
+            <input type="date" id="date-of-delivery" name="date-of-delivery" required>
+
+            <label for="time-of-delivery">Time to be Delivered:</label>
+            <input type="time" id="time-of-delivery" name="time-of-delivery" required>
+
+            <label for="remarks">Remarks:</label>
+            <textarea id="remarks" name="remarks" rows="3"></textarea>
+
+            <label for="receiver-first-name">Receiver First Name:</label>
+            <input type="text" id="receiver-first-name" name="receiver-first-name" required>
+
+            <label for="receiver-last-name">Receiver Last Name:</label>
+            <input type="text" id="receiver-last-name" name="receiver-last-name" required>
+
+            <label for="receiver-phone-number">Receiver Phone Number:</label>
+            <input type="tel" id="receiver-phone-number" name="receiver-phone-number" required>
+
+            <button type="submit">Order</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById("delivery-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+            let valid = true;
+
+            function showError(id, message) {
+                document.getElementById(id).textContent = message;
+                valid = false;
+            }
+
+            function clearError(id) {
+                document.getElementById(id).textContent = "";
+            }
+
+            // Clear all previous errors
+            const errorIds = [
+                "error-deliver-from",
+                "error-street-address",
+                "error-city",
+                "error-postal-zip-code",
+                "error-date-of-delivery",
+                "error-time-of-delivery",
+                "error-receiver-first-name",
+                "error-receiver-last-name",
+                "error-receiver-phone-number"
+            ];
+            errorIds.forEach(clearError);
+
+            // Validate required fields
+            if (!document.getElementById("deliver-from").value.trim()) {
+                showError("error-deliver-from", "Deliverer's Name is required.");
+            }
+            if (!document.getElementById("street-address").value.trim()) {
+                showError("error-street-address", "Street Address is required.");
+            }
+            if (!document.getElementById("city").value.trim()) {
+                showError("error-city", "City is required.");
+            }
+            if (!document.getElementById("postal-zip-code").value.trim()) {
+                showError("error-postal-zip-code", "Postal / Zip Code is required.");
+            }
+            if (!document.getElementById("date-of-delivery").value) {
+                showError("error-date-of-delivery", "Date to be Delivered is required.");
+            }
+            if (!document.getElementById("time-of-delivery").value) {
+                showError("error-time-of-delivery", "Time to be Delivered is required.");
+            }
+            if (!document.getElementById("receiver-first-name").value.trim()) {
+                showError("error-receiver-first-name", "Receiver First Name is required.");
+            }
+            if (!document.getElementById("receiver-last-name").value.trim()) {
+                showError("error-receiver-last-name", "Receiver Last Name is required.");
+            }
+            if (!document.getElementById("receiver-phone-number").value.trim()) {
+                showError("error-receiver-phone-number", "Receiver Phone Number is required.");
+            }
+
+            // If all fields are valid, redirect to the confirmation page
+            if (valid) {
+                window.location.href = 'confirmpayment.html';
+            }
+        });
+    </script>
+</body>
+</html>

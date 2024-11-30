@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Method</title>
+    <style>
+        body {
+            background-color: #f9f9f9;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .promise {
+            color: #0b1252;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            justify-content: start;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .payment-option:hover {
+            background-color: #f0f0f0;
+        }
+
+        .payment-option img {
+            width: 40px;
+            margin-right: 15px;
+        }
+
+        .payment-option span {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .selected {
+            background-color: #e0e7ff;
+            border-color: #0b1252;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #0b1252;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        button:hover:enabled {
+            background-color: #433d58;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            .payment-option img {
+                width: 30px;
+            }
+
+            .payment-option span {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Payment Method</h1>
+        <p class="promise">
+            Your payment details are encrypted using industry-standard SSL encryption for complete security.
+        </p>
+
+        <div class="payment-option" onclick="selectOption(this)" data-method="card">
+            <img src="Screenshot_27-11-2024_18247_iconape.com.jpeg" alt="Credit/Debit Card icon" aria-label="Credit or Debit Card">
+            <span>Credit/Debit Card</span>
+        </div>
+
+        <div class="payment-option" onclick="selectOption(this)" data-method="bank">
+            <img src="paga.png" alt="Bank Payment icon" aria-label="Secure Bank Payment">
+            <span>Secure Bank Payment</span>
+        </div>
+
+        <div class="payment-option" onclick="selectOption(this)" data-method="paypal">
+            <img src="Screenshot_27-11-2024_18235_www.bing.com.jpeg" alt="PayPal icon" aria-label="PayPal">
+            <span>Pay with PayPal</span>
+        </div>
+
+        <button type="button" id="continue-btn" disabled onclick="proceedPayment()">
+            Continue
+        </button>
+    </div>
+
+    <script>
+        let selectedMethod = null;
+
+        function selectOption(option) {
+            // Remove 'selected' class from all options
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+
+            // Add 'selected' class to the clicked option
+            option.classList.add('selected');
+            selectedMethod = option.dataset.method;
+
+            // Enable the button
+            document.getElementById('continue-btn').disabled = false;
+        }
+
+        function proceedPayment() {
+            if (selectedMethod) {
+                if (selectedMethod === 'card') {
+                    // Redirect to debit.html if Credit/Debit Card is selected
+                    window.location.href = 'debit.html';
+                } else if (selectedMethod === 'bank') {
+                    // Redirect to display-bank-info.html if Secure Bank Payment is selected
+                    window.location.href = 'display-bank-info.html';
+                } else if (selectedMethod === 'paypal') {
+                    alert(`PayPal is not available. Proceed to bank and requst for it.`);
+                    // You can add PayPal redirection logic here, if needed.
+                }
+            }
+        }
+    </script>
+</body>
+</html>

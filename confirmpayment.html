@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: center;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px 20px;
+            background-color: #3568a7;
+            color: white;
+            font-size: 1.2em;
+        }
+        .header a {
+            position: absolute;
+            left: 35px;
+            color: white;
+            text-decoration: none;
+            font-size: 1.5em;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: #8097ff4b, 0.2;
+        }
+        .header a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        .container {
+            margin: 50px auto;
+            padding: 20px;
+            max-width: 300px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #0b1252;
+        }
+        .amount {
+            font-size: 1.5em;
+            color: #333;
+            margin: 10px 0;
+        }
+        .details {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #333;
+            text-align: left;
+        }
+        .details-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .line {
+            border-top: 1px solid #ccc;
+            margin: 10px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #fff;
+            background-color:  #0b1252;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #040d1a;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="Delivery.html">&#60; </a>
+        <span>Deposit</span>
+    </header>
+    <div class="container">
+        <h1>Confirm payment</h1>
+        <p>Amount</p>
+        <p class="amount">$10.00</p>
+        <div class="details">
+            <div class="details-item">
+                <span>Country:</span>
+                <span>USA</span>
+            </div>
+            <div class="line"></div>
+            <div class="details-item">
+                <span>Currency:</span>
+                <span>Dollars</span>
+            </div>
+        </div>
+        <a href="paymentmethod.html" class="btn">Proceed to payment</a>
+    </div>
+    <footer>     
+        Need help? <a href="mailto:airanimalpetmoveer@gmail.com">Contact Support</a>
+    </footer>
+</body>
+</html>

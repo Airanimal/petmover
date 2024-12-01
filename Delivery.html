@@ -158,68 +158,60 @@
             <button type="submit">Order</button>
         </form>
     </div>
-    <script>
-        document.getElementById("delivery-form").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent default form submission
-            let valid = true;
+<script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-            function showError(id, message) {
-                document.getElementById(id).textContent = message;
-                valid = false;
-            }
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+        authDomain: "and-facebook-ab84c.firebaseapp.com",
+        databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+        projectId: "and-facebook-ab84c",
+        storageBucket: "and-facebook-ab84c.appspot.com",
+        messagingSenderId: "4885749329",
+        appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+    };
 
-            function clearError(id) {
-                document.getElementById(id).textContent = "";
-            }
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-            // Clear all previous errors
-            const errorIds = [
-                "error-deliver-from",
-                "error-street-address",
-                "error-city",
-                "error-postal-zip-code",
-                "error-date-of-delivery",
-                "error-time-of-delivery",
-                "error-receiver-first-name",
-                "error-receiver-last-name",
-                "error-receiver-phone-number"
-            ];
-            errorIds.forEach(clearError);
+    // Form submission event listener
+    document.querySelector("form").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent default form submission
 
-            // Validate required fields
-            if (!document.getElementById("deliver-from").value.trim()) {
-                showError("error-deliver-from", "Deliverer's Name is required.");
-            }
-            if (!document.getElementById("street-address").value.trim()) {
-                showError("error-street-address", "Street Address is required.");
-            }
-            if (!document.getElementById("city").value.trim()) {
-                showError("error-city", "City is required.");
-            }
-            if (!document.getElementById("postal-zip-code").value.trim()) {
-                showError("error-postal-zip-code", "Postal / Zip Code is required.");
-            }
-            if (!document.getElementById("date-of-delivery").value) {
-                showError("error-date-of-delivery", "Date to be Delivered is required.");
-            }
-            if (!document.getElementById("time-of-delivery").value) {
-                showError("error-time-of-delivery", "Time to be Delivered is required.");
-            }
-            if (!document.getElementById("receiver-first-name").value.trim()) {
-                showError("error-receiver-first-name", "Receiver First Name is required.");
-            }
-            if (!document.getElementById("receiver-last-name").value.trim()) {
-                showError("error-receiver-last-name", "Receiver Last Name is required.");
-            }
-            if (!document.getElementById("receiver-phone-number").value.trim()) {
-                showError("error-receiver-phone-number", "Receiver Phone Number is required.");
-            }
+        // Get form data
+        const formData = {
+            deliverFrom: document.getElementById("deliver-from").value.trim(),
+            streetAddress: document.getElementById("street-address").value.trim(),
+            streetAddressLine2: document.getElementById("street-address-line-2").value.trim(),
+            city: document.getElementById("city").value.trim(),
+            region: document.getElementById("region").value.trim(),
+            postalZipCode: document.getElementById("postal-zip-code").value.trim(),
+            country: document.getElementById("country").value.trim(),
+            deliveryDescription: document.getElementById("delivery-description").value.trim(),
+            dateOfDelivery: document.getElementById("date-of-delivery").value,
+            timeOfDelivery: document.getElementById("time-of-delivery").value,
+            remarks: document.getElementById("remarks").value.trim(),
+            receiverFirstName: document.getElementById("receiver-first-name").value.trim(),
+            receiverLastName: document.getElementById("receiver-last-name").value.trim(),
+            receiverPhoneNumber: document.getElementById("receiver-phone-number").value.trim()
+        };
 
-            // If all fields are valid, redirect to the confirmation page
-            if (valid) {
-                window.location.href = 'confirmpayment.html';
-            }
-        });
-    </script>
+        // Save data to Firebase
+        const newOrderRef = push(ref(db, "orders")); // Create a new unique key for each order
+        set(newOrderRef, formData)
+            .then(() => {
+                // Redirect to the confirmation page immediately
+                window.location.href = "confirmpayment.html";
+            })
+            .catch((error) => {
+                console.error("Error saving to database:", error);
+                alert("Failed to submit order. Please try again.");
+            });
+    });
+</script>
 </body>
 </html>

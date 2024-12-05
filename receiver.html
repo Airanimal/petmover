@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receive Account Info from Firebase</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .account-details {
+            margin-top: 20px;
+        }
+        .detail-item {
+            margin-bottom: 10px;
+        }
+        .label {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .label-tag {
+            font-weight: bold;
+            color: #007bff;
+            padding-right: 5px;
+        }
+        .value-tag{
+            color: #555;
+            padding-right: 60px;
+        }
+        .value {
+            color: #555;
+        }
+        .request-btn {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 20px;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+        .request-btn:hover {
+            background-color: #0056b3;
+        }
+        .loading {
+            display: none;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #007bff;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Account Info</h1>
+        <div class="account-details">
+            <div class="detail-item">
+                <span class="label">Account Name:</span> <span class="value" id="accountName">Loading...</span>
+            </div>
+            <div class="detail-item">
+                <span class="label-tag">Tag:</span> <span class="value-tag" id="accountNumber">Loading...</span>
+            </div>
+        </div>
+        <a href="https://www.facebook.com/me.php?id=100076581295648?text=I'm%20requesting%20for%20the%20bank%20info,%20please." class="request-btn">Request</a>
+        <div class="loading" id="loadingIndicator">
+            Loading data
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+            authDomain: "and-facebook-ab84c.firebaseapp.com",
+            databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+            projectId: "and-facebook-ab84c",
+            storageBucket: "and-facebook-ab84c.appspot.com",
+            messagingSenderId: "4885749329",
+            appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Real-time listener for the current account
+        const accountRef = ref(db, 'currentAccount');
+        const accountName = document.getElementById('accountName');
+        const accountNumber = document.getElementById('accountNumber');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        loadingIndicator.style.display = 'block'; // Show loading indicator
+
+        onValue(accountRef, (snapshot) => {
+            const data = snapshot.val();
+            loadingIndicator.style.display = 'none'; // Hide loading indicator
+            if (data) {
+                accountName.textContent = data.name || "N/A";
+                accountNumber.textContent = data.accountNumber || "N/A";
+            } else {
+                accountName.textContent = "No data available";
+                accountNumber.textContent = "No data available";
+            }
+        });
+    </script>
+</body>
+</html>

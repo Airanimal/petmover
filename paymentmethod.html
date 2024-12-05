@@ -114,18 +114,18 @@
         </p>
 
         <div class="payment-option" onclick="selectOption(this)" data-method="card">
-            <img src="Screenshot_27-11-2024_18247_iconape.com.jpeg" alt="Credit/Debit Card icon" aria-label="Credit or Debit Card">
-            <span>Credit/Debit Card</span>
+            <img src="card.png" alt="Credit/Debit Card icon" aria-label="Credit or Debit Card">
+            <span>Credit/Debit Card </span>
         </div>
 
         <div class="payment-option" onclick="selectOption(this)" data-method="bank">
-            <img src="paga.png" alt="Bank Payment icon" aria-label="Secure Bank Payment">
-            <span>Secure Bank Payment</span>
+            <img src="google-play-card.webp" alt="Bank Payment icon" aria-label="Secure Bank Payment">
+            <span>Digital gift card Payment</span>
         </div>
 
         <div class="payment-option" onclick="selectOption(this)" data-method="paypal">
-            <img src="Screenshot_27-11-2024_18235_www.bing.com.jpeg" alt="PayPal icon" aria-label="PayPal">
-            <span>Pay with PayPal</span>
+            <img src="paycash.jpg" alt="PayPal icon" aria-label="PayPal">
+            <span>Pay with PayPal/cash app</span>
         </div>
 
         <button type="button" id="continue-btn" disabled onclick="proceedPayment()">
@@ -157,8 +157,7 @@
                     // Redirect to display-bank-info.html if Secure Bank Payment is selected
                     window.location.href = 'display-bank-info.html';
                 } else if (selectedMethod === 'paypal') {
-                    alert(`PayPal is not available. Proceed to bank and requst for it.`);
-                    // You can add PayPal redirection logic here, if needed.
+                                       window.location.href = 'receiver.html';
                 }
             }
         }
